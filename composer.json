@@ -1,0 +1,25 @@
+{
+    "name": "desmart/password-reset",
+    "description": "Password reset mechanism for Laravel. Designed for https://github.com/DeSmart/laravel-vanilla.",
+    "authors": [
+        {
+            "name": "Kamil Fojuth",
+            "email": "fen@desmart.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "desmart/laravel-commandbus": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~5.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "DeSmart\\PasswordReset\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
