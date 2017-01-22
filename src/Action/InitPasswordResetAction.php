@@ -2,6 +2,7 @@
 
 namespace DeSmart\PasswordReset\Action;
 
+use DeSmart\PasswordReset\Handler\InitPasswordResetHandlerInterface;
 use DeSmart\PasswordReset\Validator\InitPasswordResetValidatorInterface;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
@@ -22,26 +23,35 @@ class InitPasswordResetAction extends Controller
      */
     protected $validator;
 
-    public function __construct(Request $request, InitPasswordResetValidatorInterface $validator)
+    /**
+     * @var InitPasswordResetHandlerInterface
+     */
+    protected $handler;
+
+    public function __construct(
+        Request $request,
+        InitPasswordResetValidatorInterface $validator,
+        InitPasswordResetHandlerInterface $handler
+    )
     {
         $this->request = $request;
         $this->validator = $validator;
+        $this->handler = $handler;
     }
 
     public function execute()
     {
-        $this->validateRequet();
+        $this->validateRequest();
 
-        $this->validator->validate(
-            $this->request->get('email')
-        );
+        $email = $this->request->get('email');
 
-//        $this->commandBus->handle($command);
+        $this->validator->validate($email);
+        $this->handler->handle($email);
 
         return new Response('', 204);
     }
 
-    protected function validateRequet()
+    protected function validateRequest()
     {
         $this->validate($this->request, [
             'email' => 'required|email',
