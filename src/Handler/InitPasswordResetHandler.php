@@ -2,9 +2,8 @@
 
 namespace DeSmart\PasswordReset\Handler;
 
-use Illuminate\Contracts\Routing\UrlGenerator;
+use DeSmart\PasswordReset\Mail\PasswordResetMail;
 use Illuminate\Mail\Mailer;
-//use ComPortal\WebPlugin\Users\Mail\ResetPassword;
 use Illuminate\Database\Eloquent\Model;
 
 class InitPasswordResetHandler implements InitPasswordResetHandlerInterface
@@ -20,33 +19,34 @@ class InitPasswordResetHandler implements InitPasswordResetHandlerInterface
      */
     protected $passwordResetQuery;
 
-//    /**
-//     * @var Mailer
-//     */
-//    protected $mailer;
-//
-//    /**
-//     * @var UrlGenerator
-//     */
-//    protected $urlGenerator;
-//
-//    /**
-//     * @var string
-//     */
-//    protected $appUrl;
+    /**
+     * @var string
+     */
+    protected $linkPattern;
+
+    /**
+     * @var string
+     */
+    protected $appUrl;
+
+    /**
+     * @var Mailer
+     */
+    protected $mailer;
 
     public function __construct(
         Model $userQuery,
-        Model $passwordResetQuery
-//        Mailer $mailer,
-//        UrlGenerator $urlGenerator,
-//        string $appUrl
-    ) {
+        Model $passwordResetQuery,
+        string $linkPattern,
+        string $appUrl,
+        Mailer $mailer
+    )
+    {
         $this->userQuery = $userQuery;
         $this->passwordResetQuery = $passwordResetQuery;
-//        $this->mailer = $mailer;
-//        $this->urlGenerator = $urlGenerator;
-//        $this->appUrl = $appUrl;
+        $this->linkPattern = $linkPattern;
+        $this->appUrl = $appUrl;
+        $this->mailer = $mailer;
     }
 
     public function handle(string $email)
@@ -58,12 +58,10 @@ class InitPasswordResetHandler implements InitPasswordResetHandlerInterface
             ->delete();
 
         $token = $this->createTokenForEmail($email);
+        $link = $this->getLink($token->token, $user->id);
 
-        dd($token);
-//        $link = "{$this->appUrl}/login/reset/finish?user_id={$user->getId()}&token={$token->getToken()}";
-//
-//        $this->mailer->to($email)
-//            ->send(new ResetPassword($user, $link));
+        $this->mailer->to($email)
+            ->send(new PasswordResetMail($user, $link));
     }
 
     protected function createTokenForEmail(string $email)
@@ -77,5 +75,21 @@ class InitPasswordResetHandler implements InitPasswordResetHandlerInterface
         $token->save();
 
         return $token;
+    }
+
+    protected function getLink(string $token, $userId)
+    {
+        $link = preg_replace(
+            [
+                '/{USER_ID}/',
+                '/{TOKEN}/'
+            ],
+            [
+                $userId,
+                $token
+            ],
+            $this->linkPattern);
+
+        return $this->appUrl . $link;
     }
 }
