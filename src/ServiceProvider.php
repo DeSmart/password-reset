@@ -6,6 +6,8 @@ use DeSmart\PasswordReset\Handler\InitPasswordResetHandler;
 use DeSmart\PasswordReset\Handler\InitPasswordResetHandlerInterface;
 use DeSmart\PasswordReset\Validator\InitPasswordResetValidator;
 use DeSmart\PasswordReset\Validator\InitPasswordResetValidatorInterface;
+use DeSmart\PasswordReset\Validator\VerifyTokenValidator;
+use DeSmart\PasswordReset\Validator\VerifyTokenValidatorInterface;
 use Illuminate\Mail\Mailer;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
@@ -28,6 +30,13 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 $packageConfig['password_reset_form_url_pattern'],
                 $config['app']['url'],
                 $app->make(Mailer::class)
+            );
+        });
+
+        $this->app->bind(VerifyTokenValidatorInterface::class, function ($app) use ($packageConfig) {
+            return new VerifyTokenValidator(
+                new $packageConfig['user_model'],
+                new $packageConfig['password_reset_model']
             );
         });
     }
