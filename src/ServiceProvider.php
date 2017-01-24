@@ -6,6 +6,8 @@ use DeSmart\PasswordReset\Handler\InitPasswordResetHandler;
 use DeSmart\PasswordReset\Handler\InitPasswordResetHandlerInterface;
 use DeSmart\PasswordReset\Validator\InitPasswordResetValidator;
 use DeSmart\PasswordReset\Validator\InitPasswordResetValidatorInterface;
+use DeSmart\PasswordReset\Validator\SetNewPasswordValidator;
+use DeSmart\PasswordReset\Validator\SetNewPasswordValidatorInterface;
 use DeSmart\PasswordReset\Validator\VerifyTokenValidator;
 use DeSmart\PasswordReset\Validator\VerifyTokenValidatorInterface;
 use Illuminate\Mail\Mailer;
@@ -35,6 +37,13 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         $this->app->bind(VerifyTokenValidatorInterface::class, function ($app) use ($packageConfig) {
             return new VerifyTokenValidator(
+                new $packageConfig['user_model'],
+                new $packageConfig['password_reset_model']
+            );
+        });
+
+        $this->app->bind(SetNewPasswordValidatorInterface::class, function ($app) use ($packageConfig) {
+            return new SetNewPasswordValidator(
                 new $packageConfig['user_model'],
                 new $packageConfig['password_reset_model']
             );
