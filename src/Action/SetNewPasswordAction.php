@@ -2,9 +2,11 @@
 
 namespace DeSmart\PasswordReset\Action;
 
+use DeSmart\PasswordReset\Handler\SetNewPasswordHandlerInterface;
 use DeSmart\PasswordReset\Validator\SetNewPasswordValidatorInterface;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 
 class SetNewPasswordAction extends Controller
@@ -21,24 +23,38 @@ class SetNewPasswordAction extends Controller
      */
     protected $validator;
 
+    /**
+     * @var SetNewPasswordHandlerInterface
+     */
+    protected $handler;
+
     public function __construct(
         Request $request,
-        SetNewPasswordValidatorInterface $validator
+        SetNewPasswordValidatorInterface $validator,
+        SetNewPasswordHandlerInterface $handler
     )
     {
         $this->request = $request;
         $this->validator = $validator;
+        $this->handler = $handler;
     }
 
     public function execute()
     {
+        $userId = $this->request->get('user_id');
+        $password = $this->request->get('password');
+
         $this->validateRequest();
 
         $this->validator->validate(
-            $this->request->get('user_id'),
+            $userId,
             $this->request->get('token'),
-            $this->request->get('password')
+            $password
         );
+
+        $this->handler->handle($userId, $password);
+
+        return new Response('', 204);
     }
 
     protected function validateRequest()

@@ -4,12 +4,15 @@ namespace DeSmart\PasswordReset;
 
 use DeSmart\PasswordReset\Handler\InitPasswordResetHandler;
 use DeSmart\PasswordReset\Handler\InitPasswordResetHandlerInterface;
+use DeSmart\PasswordReset\Handler\SetNewPasswordHandler;
+use DeSmart\PasswordReset\Handler\SetNewPasswordHandlerInterface;
 use DeSmart\PasswordReset\Validator\InitPasswordResetValidator;
 use DeSmart\PasswordReset\Validator\InitPasswordResetValidatorInterface;
 use DeSmart\PasswordReset\Validator\SetNewPasswordValidator;
 use DeSmart\PasswordReset\Validator\SetNewPasswordValidatorInterface;
 use DeSmart\PasswordReset\Validator\VerifyTokenValidator;
 use DeSmart\PasswordReset\Validator\VerifyTokenValidatorInterface;
+use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Mail\Mailer;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
@@ -44,6 +47,14 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         $this->app->bind(SetNewPasswordValidatorInterface::class, function ($app) use ($packageConfig) {
             return new SetNewPasswordValidator(
+                new $packageConfig['user_model'],
+                new $packageConfig['password_reset_model']
+            );
+        });
+
+        $this->app->bind(SetNewPasswordHandlerInterface::class, function ($app) use ($packageConfig) {
+            return new SetNewPasswordHandler(
+                $app->make(Hasher::class),
                 new $packageConfig['user_model'],
                 new $packageConfig['password_reset_model']
             );
