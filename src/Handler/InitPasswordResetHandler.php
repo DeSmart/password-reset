@@ -64,6 +64,12 @@ class InitPasswordResetHandler implements InitPasswordResetHandlerInterface
             ->send(new PasswordResetMail($user, $link));
     }
 
+    /**
+     * Creates a password reset token for the given email address.
+     *
+     * @param string $email
+     * @return Model
+     */
     protected function createTokenForEmail(string $email)
     {
         $token = new $this->passwordResetQuery;
@@ -77,6 +83,13 @@ class InitPasswordResetHandler implements InitPasswordResetHandlerInterface
         return $token;
     }
 
+    /**
+     * Returns the URL that will be sent to the user.
+     *
+     * @param string $token
+     * @param $userId
+     * @return string
+     */
     protected function getLink(string $token, $userId)
     {
         $link = preg_replace(

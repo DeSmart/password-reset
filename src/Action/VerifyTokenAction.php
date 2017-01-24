@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 
+/**
+ * Checks if the password reset token matches the given user.
+ */
 class VerifyTokenAction extends Controller
 {
     use ValidatesRequests;

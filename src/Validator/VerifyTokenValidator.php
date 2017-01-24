@@ -26,6 +26,13 @@ class VerifyTokenValidator implements VerifyTokenValidatorInterface
         $this->passwordResetQuery = $passwordResetQuery;
     }
 
+    /**
+     * @param $userId
+     * @param string $token
+     * @throws PasswordResetTokenInvalidException
+     * @throws PasswordResetTokenNotFoundException
+     * @throws UserNotFoundException
+     */
     public function validate($userId, string $token)
     {
         $user = $this->userQuery->find($userId);

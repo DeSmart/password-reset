@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 
+/**
+ * Sets a new password for the given user.
+ */
 class SetNewPasswordAction extends Controller
 {
     use ValidatesRequests;

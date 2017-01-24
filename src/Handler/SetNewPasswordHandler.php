@@ -33,9 +33,30 @@ class SetNewPasswordHandler implements SetNewPasswordHandlerInterface
     public function handle($userId, string $password)
     {
         $user = $this->userQuery->find($userId);
+
+        $this->setPassword($user, $password);
+        $this->deleteToken($user);
+    }
+
+    /**
+     * Set new password for the given user.
+     *
+     * @param Model $user
+     * @param string $password
+     */
+    protected function setPassword(Model $user, string $password)
+    {
         $user->password = $this->hasher->make($password);
         $user->save();
+    }
 
+    /**
+     * Delete the password reset token for the given user.
+     *
+     * @param Model $user
+     */
+    protected function deleteToken(Model $user)
+    {
         $this->passwordResetQuery->where('email', $user->email)
             ->delete();
     }

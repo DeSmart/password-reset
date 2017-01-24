@@ -39,6 +39,12 @@ class SetNewPasswordValidator implements SetNewPasswordValidatorInterface
         $this->validatePassword($password);
     }
 
+    /**
+     * @param Model $user
+     * @param string $token
+     * @throws PasswordResetTokenInvalidException
+     * @throws PasswordResetTokenNotFoundException
+     */
     protected function validateToken(Model $user, string $token)
     {
         $storedToken = $this->passwordResetQuery->where('email', $user->email)
@@ -53,6 +59,10 @@ class SetNewPasswordValidator implements SetNewPasswordValidatorInterface
         }
     }
 
+    /**
+     * @param string $password
+     * @throws PasswordTooShortException
+     */
     protected function validatePassword(string $password)
     {
         if (strlen($password) < 6) {

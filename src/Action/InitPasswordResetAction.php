@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 
+/**
+ * Creates a password reset token and sends an email to the given user.
+ */
 class InitPasswordResetAction extends Controller
 {
     use ValidatesRequests;
