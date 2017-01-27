@@ -64,10 +64,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     public function boot()
     {
         $this->loadViewsFrom(__DIR__.'/../views', 'password-reset');
+        $this->loadMigrationsFrom(__DIR__.'/../migrations');
 
         $this->publishes([
             __DIR__ . '/../config/password-reset.php' => config_path('password-reset.php'),
-            __DIR__.'/../views' => resource_path('views/vendor/password-reset'),
+            __DIR__ . '/../views' => resource_path('views/vendor/desmart/password-reset'),
         ]);
 
         require __DIR__ . '/routes.php';
