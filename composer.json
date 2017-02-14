@@ -9,7 +9,7 @@
     ],
     "require": {
         "php": ">=7.0.0",
-        "laravel/framework": "5.3.*",
+        "laravel/framework": "5.4.*",
         "desmart/laravel-commandbus": "dev-master"
     },
     "require-dev": {
