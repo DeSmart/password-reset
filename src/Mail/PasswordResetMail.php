@@ -36,6 +36,7 @@ class PasswordResetMail extends Mailable
     {
         return $this->view('password-reset::password_reset_init', [
             'reset_link' => $this->resetLink,
+            'user' => $this->$user,
         ]);
     }
 }
